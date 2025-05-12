@@ -1,6 +1,12 @@
 ---
 # This is the internal user database
 # The hash value is a bcrypt hash and can be generated with plugin/tools/hash.sh
+# brew install bcrypt
+# bcrypt -c 12
+# or
+# pip3 install bcrypt
+# python3 -c "import bcrypt; print(bcrypt.hashpw(b'passwd-here', bcrypt.gensalt(rounds=12)).decode())"
+# the task will generate the hash for you, just set the plain password
 
 _meta:
   type: "internalusers"
@@ -12,7 +18,7 @@ admin:
   hash: "{{ admin_password }}"
   reserved: true
   backend_roles:
-  - "admin"
+    - "admin"
   description: "admin user"
 
 kibanaserver:

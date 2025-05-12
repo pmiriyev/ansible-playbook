@@ -7,6 +7,8 @@
     module: file
     path: /tmp/opensearch-nodecerts
     state: absent
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   become: false
   when: iac_enable
@@ -16,6 +18,8 @@
     module: file
     path: /tmp/opensearch-nodecerts
     state: directory
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   register: configuration
   become: false
@@ -25,12 +29,16 @@
     module: get_url
     url: https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.5/search-guard-tlstool-1.5.tar.gz
     dest: /tmp/opensearch-nodecerts/search-guard-tlstool.tar.gz
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false
 
 - name: Security Plugin configuration | Extract the certificates generation tool
   local_action: command chdir=/tmp/opensearch-nodecerts tar -xvf search-guard-tlstool.tar.gz
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false
@@ -40,6 +48,8 @@
     module: file
     dest: /tmp/opensearch-nodecerts/tools/sgtlstool.sh
     mode: a+x
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false
@@ -49,6 +59,8 @@
     module: template
     src: tlsconfig.yml
     dest: /tmp/opensearch-nodecerts/config/tlsconfig.yml
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false
@@ -56,6 +68,8 @@
 - name: Security Plugin configuration | Generate the node & admin certificates in local
   local_action:
     module: command /tmp/opensearch-nodecerts/tools/sgtlstool.sh -c /tmp/opensearch-nodecerts/config/tlsconfig.yml -ca -crt -t /tmp/opensearch-nodecerts/config/
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false
@@ -223,7 +237,7 @@
     sed -i '/hash: / s,{{ admin_password }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ admin_password }} | tail -1)','
     {{ os_sec_plugin_conf_path }}/internal_users.yml
   environment:
-    JAVA_HOME: "{{ os_home }}/jdk"
+    JAVA_HOME: "{{ java_home }}"
   run_once: true
   when: configuration.changed or iac_enable
 
@@ -232,7 +246,7 @@
     sed -i '/hash: / s,{{ kibanaserver_password }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ kibanaserver_password }} | tail -1)','
     {{ os_sec_plugin_conf_path }}/internal_users.yml
   environment:
-    JAVA_HOME: "{{ os_home }}/jdk"
+    JAVA_HOME: "{{ java_home }}"
   run_once: true
   when: configuration.changed or iac_enable
 
@@ -272,7 +286,7 @@
         sed -i '/hash: / s,{{ lookup('vars', item + '_password') }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ lookup('vars', item + '_password') }} | tail -1)','
         {{ os_sec_plugin_conf_path }}/internal_users.yml
       environment:
-        JAVA_HOME: "{{ os_home }}/jdk"
+        JAVA_HOME: "{{ java_home }}"
       run_once: true
       when: configuration.changed or copy_custom_security_configs
       with_items: "{{ custom_users_filtered }}"
@@ -287,7 +301,7 @@
     -nhnv -icl
     -h {{ hostvars[inventory_hostname]['ip'] }}
   environment:
-    JAVA_HOME: "{{ os_home }}/jdk"
+    JAVA_HOME: "{{ java_home }}"
   run_once: true
   when: configuration.changed and copy_custom_security_configs
 
@@ -301,7 +315,7 @@
     -nhnv -icl
     -h {{ hostvars[inventory_hostname]['ip'] }}
   environment:
-    JAVA_HOME: "{{ os_home }}/jdk"
+    JAVA_HOME: "{{ java_home }}"
   run_once: true
   when: configuration.changed and not copy_custom_security_configs
 
@@ -310,6 +324,8 @@
     module: file
     path: /tmp/opensearch-nodecerts
     state: absent
+  environment:
+    JAVA_HOME: "{{ java_home_local }}"
   run_once: true
   when: configuration.changed
   become: false

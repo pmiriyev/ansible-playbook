@@ -16,12 +16,15 @@ os_dashboards_version: "3.0.0"
 # Configure hostnames for opensearch nodes
 # It is required to configure SSL
 # Example es1.example.com, es2.example.com
-domain_name: example.com
+domain_name: domain.internal
 
 # Java memory heap values(GB) for opensearch
 # You can change it based on server specs
 xms_value: 2
 xmx_value: 2
+java_pkg: openjdk-21-jdk
+java_home: /usr/lib/jvm/java-21-openjdk-amd64
+java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
 
 # Cluster type whether its single-node or multi-node
 cluster_type: multi-node
@@ -36,6 +39,9 @@ cert_valid_days: 730
 
 # Auth type: 'internal' or 'oidc' (OpenID). Default: internal
 auth_type: internal
+admin_password: "{{ lookup('bitwarden.secrets.lookup', '9eea8816-5515-4382-97c9-b2db009c1c5e') }}"
+kibanaserver_password: "{{ lookup('bitwarden.secrets.lookup', '511ed3da-153f-4340-b4a2-b2db009c49bc') }}"
+logstash_password: "{{ lookup('bitwarden.secrets.lookup', '41cc2857-1510-421e-bbee-b2db009c6291') }}"
 
 # OIDC settings
 oidc:

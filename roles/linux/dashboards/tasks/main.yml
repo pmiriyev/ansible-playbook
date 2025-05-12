@@ -19,6 +19,25 @@
 - name: Tune the system settings
   ansible.builtin.import_tasks: tune.yml
 
+- name: Install Java
+  ansible.builtin.apt:
+    update_cache: true
+    name: "{{ java_pkg }}"
+    install_recommends: true
+  when: ansible_os_family == "Debian"
+
+- name: Ensure Java home is set in .bashrc
+  ansible.builtin.lineinfile:
+    path: /root/.bashrc
+    line: "export JAVA_HOME={{ java_home }}"
+    create: true
+    state: present
+    insertafter: EOF
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == "Debian"
+
 - name: Include dashboards installation
   ansible.builtin.import_tasks: dashboards.yml
 
