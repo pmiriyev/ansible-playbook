@@ -39,6 +39,7 @@ cert_valid_days: 730
 
 # Auth type: 'internal' or 'oidc' (OpenID). Default: internal
 auth_type: internal
+# auth_type: oidc
 admin_password: "{{ lookup('bitwarden.secrets.lookup', '9eea8816-5515-4382-97c9-b2db009c1c5e') }}"
 kibanaserver_password: "{{ lookup('bitwarden.secrets.lookup', '511ed3da-153f-4340-b4a2-b2db009c49bc') }}"
 logstash_password: "{{ lookup('bitwarden.secrets.lookup', '41cc2857-1510-421e-bbee-b2db009c6291') }}"
@@ -47,7 +48,7 @@ logstash_password: "{{ lookup('bitwarden.secrets.lookup', '41cc2857-1510-421e-bb
 oidc:
   description: "Authenticate via IdP"
   # OpenID server URI
-  connect_url: https://oidc.example.com/auth/realms/<realm name>/.well-known/openid-configuration
+  connect_url: https://gitlab.com/.well-known/openid-configuration
   # The JWT token field that contains the user name
   subject_key: preferred_username
   # the JWT token field that contains a list of user roles
@@ -55,11 +56,11 @@ oidc:
   # Scopes
   scopes: "openid profile email"
   # The address of Dashboards to redirect the user to after successful authentication
-  dashboards_url: http(s)://<dashboards address>.example.com
+  dashboards_url: https://kibana.miriyev.ai
   # IdP client ID
-  client_id: opensearch
+  client_id: "{{ lookup('bitwarden.secrets.lookup', '0e6d8c47-1672-48dc-af58-b2de009c2b9a') }}"
   # IdP client secret
-  client_secret: "00000000-0000-0000-0000-000000000000"
+  client_secret: "{{ lookup('bitwarden.secrets.lookup', '02c00ca3-7d70-45f3-aa72-b2de009c478f') }}"
 
 # Overwrite demo configurations with your own
 copy_custom_security_configs: false
