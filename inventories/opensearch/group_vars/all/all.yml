@@ -15,13 +15,15 @@ os_dashboards_version: "3.2.0"
 
 # Configure hostnames for opensearch nodes
 # It is required to configure SSL
-# Example es1.example.com, es2.example.com
+# Example es1.example.com, es2.example.com: will be added to inventory_hostname
+# e.g os1.domain.internal
 domain_name: domain.internal
 
 # Java memory heap values(GB) for opensearch
 # You can change it based on server specs
-xms_value: 16
-xmx_value: 16
+# Max 31
+xms_value: 31
+xmx_value: 31
 java_pkg: openjdk-21-jdk
 java_home: /usr/lib/jvm/java-21-openjdk-amd64
 java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
@@ -35,7 +37,7 @@ os_user: opensearch
 os_dashboards_user: opensearch-dashboards
 
 # Number of days that certificates are valid
-cert_valid_days: 730
+cert_valid_days: 3650
 
 # Auth type: 'internal' or 'oidc' (OpenID). Default: internal
 auth_type: internal
