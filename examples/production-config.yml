@@ -1,0 +1,182 @@
+# Production-Ready OpenSearch Configuration
+# Copy this to inventories/opensearch/group_vars/all/all.yml
+
+## Common opensearch configuration parameters ##
+
+os_cluster_name: production-opensearch-cluster
+
+# opensearch download
+os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
+
+# opensearch version (use latest stable)
+os_version: "3.2.0"
+os_dashboards_version: "3.2.0"
+
+# Configure hostnames for opensearch nodes
+domain_name: yourdomain.com
+
+# Production-optimized Java memory heap values
+# Rule: Max 50% of available RAM, max 31GB
+xms_value: 16
+xmx_value: 16
+java_pkg: openjdk-21-jdk
+java_home: /usr/lib/jvm/java-21-openjdk-amd64
+java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
+
+# Production cluster type
+cluster_type: multi-node
+
+# opensearch user info
+os_user: opensearch
+os_dashboards_user: opensearch-dashboards
+
+# Production certificate validity (1 year)
+cert_valid_days: 365
+
+# Production auth type
+auth_type: oidc
+
+# Production OIDC settings
+oidc:
+  name: "GitLab"
+  logo: "gitlab"
+  description: "Authenticate via IdP"
+  connect_url: https://gitlab.com/.well-known/openid-configuration
+  subject_key: preferred_username
+  groups_key: groups
+  scopes: "openid profile email groups"
+  dashboards_url: https://kibana.yourdomain.com
+  client_id: "{{ lookup('bitwarden.secrets.lookup', 'your-client-id') }}"
+  client_secret: "{{ lookup('bitwarden.secrets.lookup', 'your-client-secret') }}"
+  enable_ssl: true
+  verify_hostnames: true
+  default_role: "oidc_viewer"
+  
+  # Enterprise group mapping
+  group_mapping:
+    # Executive level
+    c-suite: "oidc_executive"
+    vp-engineering: "oidc_vp_engineering"
+    vp-product: "oidc_vp_product"
+    
+    # Engineering departments
+    platform-engineering: "oidc_platform_engineer"
+    backend-engineering: "oidc_backend_engineer"
+    frontend-engineering: "oidc_frontend_engineer"
+    mobile-engineering: "oidc_mobile_engineer"
+    data-engineering: "oidc_data_engineer"
+    ml-engineering: "oidc_ml_engineer"
+    
+    # Operations teams
+    devops-team: "oidc_devops"
+    sre-team: "oidc_sre"
+    security-team: "oidc_security_analyst"
+    
+    # Quality & Testing
+    qa-team: "oidc_qa_analyst"
+    test-automation: "oidc_test_automation"
+    performance-qa: "oidc_performance_qa"
+    
+    # Product & Design
+    product-team: "oidc_product_analyst"
+    ux-team: "oidc_ux_analyst"
+    design-team: "oidc_design_analyst"
+    
+    # Business & Analytics
+    business-intelligence: "oidc_bi_analyst"
+    data-science: "oidc_data_scientist"
+    marketing-analytics: "oidc_marketing_analyst"
+    
+    # Support & Operations
+    customer-support: "oidc_support"
+    technical-support: "oidc_technical_support"
+    compliance-team: "oidc_compliance"
+    
+    # External stakeholders
+    contractors: "oidc_contractor"
+    partners: "oidc_partner"
+    investors: "oidc_investor"
+
+# Production security settings
+copy_custom_security_configs: true
+
+# Production custom security plugin configs
+custom_security_plugin_configs:
+  - files/tenants.yml
+  - files/roles.yml
+  - files/roles_mapping.yml
+  - files/internal_users.yml
+
+# Production IaC settings
+iac_enable: true
+
+# Production monitoring settings
+enable_monitoring: true
+monitoring_stack:
+  prometheus: true
+  grafana: true
+  opensearch_exporter: true
+
+# Production backup settings
+enable_backups: true
+backup_settings:
+  snapshot_repository: "backup_repo"
+  backup_schedule: "0 2 * * *"  # Daily at 2 AM
+  retention_days: 30
+  backup_location: "/opt/opensearch-backups"
+
+# Production performance settings
+performance_settings:
+  indices_memory_index_buffer_size: "20%"
+  indices_queries_cache_size: "10%"
+  indices_fielddata_cache_size: "20%"
+  thread_pool_write_queue_size: 1000
+  thread_pool_search_queue_size: 1000
+
+# Production cluster settings
+cluster_settings:
+  disk_watermark_low: "85%"
+  disk_watermark_high: "90%"
+  disk_watermark_flood_stage: "95%"
+  max_shards_per_node: 1000
+
+# Production logging settings
+logging_settings:
+  level: "INFO"
+  discovery_logger: "WARN"
+  cluster_service_logger: "WARN"
+  gc_logging: true
+  audit_logging: true
+
+# Production security settings
+security_settings:
+  enforce_hostname_verification: true
+  certificate_rotation: true
+  audit_logging: true
+  network_segmentation: true
+
+# Production alerting settings
+alerting_settings:
+  enabled: true
+  channels:
+    - type: "email"
+      recipients: ["ops-team@yourdomain.com"]
+    - type: "slack"
+      webhook: "{{ lookup('bitwarden.secrets.lookup', 'slack-webhook') }}"
+  
+  rules:
+    - name: "Cluster Health Red"
+      condition: "cluster_health_status == 'red'"
+      severity: "critical"
+    - name: "High CPU Usage"
+      condition: "cpu_usage > 80%"
+      severity: "warning"
+    - name: "High Memory Usage"
+      condition: "memory_usage > 85%"
+      severity: "warning"
+    - name: "Disk Space Low"
+      condition: "disk_usage > 90%"
+      severity: "critical"
+    - name: "Node Down"
+      condition: "node_status == 'down'"
+      severity: "critical"

@@ -1,0 +1,65 @@
+# Small Team Configuration (2-10 people)
+# Copy this to inventories/opensearch/group_vars/all/all.yml
+
+## Common opensearch configuration parameters ##
+
+os_cluster_name: os-cluster
+os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
+os_version: "3.2.0"
+os_dashboards_version: "3.2.0"
+domain_name: domain.internal
+
+# Java memory heap values(GB) for opensearch
+xms_value: 4
+xmx_value: 4
+java_pkg: openjdk-21-jdk
+java_home: /usr/lib/jvm/java-21-openjdk-amd64
+java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
+
+# Cluster type
+cluster_type: single-node
+
+# opensearch user info
+os_user: opensearch
+os_dashboards_user: opensearch-dashboards
+
+# Number of days that certificates are valid
+cert_valid_days: 3650
+
+# Auth type: 'internal' or 'oidc' (OpenID). Default: internal
+auth_type: oidc
+
+# OIDC settings for small team
+oidc:
+  name: "GitLab"
+  logo: "gitlab"
+  description: "Authenticate via IdP"
+  connect_url: https://gitlab.com/.well-known/openid-configuration
+  subject_key: preferred_username
+  groups_key: groups
+  scopes: "openid profile email groups"
+  dashboards_url: https://kibana.miriyev.ai
+  client_id: "{{ lookup('bitwarden.secrets.lookup', 'your-client-id') }}"
+  client_secret: "{{ lookup('bitwarden.secrets.lookup', 'your-client-secret') }}"
+  enable_ssl: false
+  verify_hostnames: false
+  default_role: "oidc_developer"
+  
+  # Simple group mapping for small team
+  group_mapping:
+    admin: "oidc_admin"           # Team lead/CTO (1-2 people)
+    developer: "oidc_developer"   # All developers (3-8 people)
+    viewer: "oidc_viewer"         # Stakeholders, PMs (1-3 people)
+
+# Overwrite demo configurations with your own
+copy_custom_security_configs: true
+
+# Custom security plugin configs
+custom_security_plugin_configs:
+  - files/tenants.yml
+  - files/roles.yml
+  - files/roles_mapping.yml
+  - files/internal_users.yml
+
+# IaC settings
+iac_enable: false

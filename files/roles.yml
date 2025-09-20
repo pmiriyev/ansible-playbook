@@ -12,10 +12,10 @@ indexes_full_access:
       allowed_actions:
         - "*"
   tenant_permissions:
-  - tenant_patterns:
-    - "*"
-    allowed_actions:
-    - "kibana_all_write"
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_write"
 # ----------------------------------------------------
 indexes_security_search_full_access:
   reserved: true
@@ -28,10 +28,10 @@ indexes_security_search_full_access:
         - "read"
         - "view_index_metadata"
   tenant_permissions:
-  - tenant_patterns:
-    - "SECURITY"
-    allowed_actions:
-    - "kibana_all_write"
+    - tenant_patterns:
+        - "SECURITY"
+      allowed_actions:
+        - "kibana_all_write"
 # ----------------------------------------------------
 indexes_web_search_full_access:
   reserved: true
@@ -44,11 +44,164 @@ indexes_web_search_full_access:
         - "read"
         - "view_index_metadata"
   tenant_permissions:
-  - tenant_patterns:
-    - "WEB"
-    allowed_actions:
-    - "kibana_all_write"
+    - tenant_patterns:
+        - "WEB"
+      allowed_actions:
+        - "kibana_all_write"
 # ----------------------------------------------------
 # Restrict users so they can only view visualization and dashboard on OpenSearchDashboards
 kibana_read_only:
   reserved: true
+# ----------------------------------------------------
+# OIDC specific roles
+oidc_admin:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "*"
+  tenant_permissions:
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+oidc_readonly:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "read"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_read"
+# ----------------------------------------------------
+oidc_security_analyst:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "kube-apiserver-audit-*"
+        - "syslog-*"
+        - "security-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "read"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "SECURITY"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+oidc_web_analyst:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "ingress-nginx-*"
+        - "mywebapp-*"
+        - "web-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "read"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "WEB"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+# Group-specific OIDC roles
+oidc_backend_developer:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "backend-*"
+        - "api-*"
+        - "service-*"
+        - "application-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:data/write/delete"
+        - "read"
+        - "write"
+        - "view_index_metadata"
+        - "create_index"
+        - "delete_index"
+  tenant_permissions:
+    - tenant_patterns:
+        - "BACKEND"
+        - "API"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+oidc_frontend_developer:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "frontend-*"
+        - "ui-*"
+        - "web-*"
+        - "client-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "read"
+        - "write"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "FRONTEND"
+        - "WEB"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+oidc_qa_analyst:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "test-*"
+        - "qa-*"
+        - "automation-*"
+        - "performance-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "indices:data/write/index"
+        - "read"
+        - "write"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "QA"
+        - "TESTING"
+      allowed_actions:
+        - "kibana_all_write"
+# ----------------------------------------------------
+oidc_data_analyst:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "data-*"
+        - "analytics-*"
+        - "metrics-*"
+        - "logs-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "indices:data/write/index"
+        - "read"
+        - "write"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "DATA"
+        - "ANALYTICS"
+      allowed_actions:
+        - "kibana_all_write"

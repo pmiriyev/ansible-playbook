@@ -1,0 +1,51 @@
+# Small Team Role Mappings Configuration
+# Copy this to files/roles_mapping.yml
+
+---
+# In this file users, backendroles and hosts can be mapped to Security roles.
+# Permissions for OpenSearch roles are configured in roles.yml
+
+_meta:
+  type: "rolesmapping"
+  config_version: 2
+
+kibana_server:
+  reserved: true
+  users:
+    - "kibanaserver"
+
+logstash:
+  reserved: true
+  users:
+    - "logstash"
+
+# Simple role mappings for small team
+all_access:
+  reserved: false
+  backend_roles:
+    - "admin"
+    - "opensearch_admin"
+  description: "Maps admin to all_access"
+
+# OIDC role mappings for small team
+oidc_admin:
+  reserved: false
+  backend_roles:
+    - "admin"
+  description: "Maps OIDC admin users to all_access"
+
+oidc_developer:
+  reserved: false
+  backend_roles:
+    - "developer"
+  description: "Maps OIDC developers to developer role"
+
+oidc_viewer:
+  reserved: false
+  backend_roles:
+    - "viewer"
+  description: "Maps OIDC viewers to viewer role"
+
+# Reserved role mappings
+kibana_read_only:
+  reserved: true

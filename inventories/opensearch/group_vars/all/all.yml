@@ -40,29 +40,54 @@ os_dashboards_user: opensearch-dashboards
 cert_valid_days: 3650
 
 # Auth type: 'internal' or 'oidc' (OpenID). Default: internal
-auth_type: internal
-# auth_type: oidc
+# auth_type: internal
+auth_type: oidc
 
 # OIDC settings
 oidc:
+  name: "GitLab"
+  logo: "gitlab"
   description: "Authenticate via IdP"
   # OpenID server URI
   connect_url: https://gitlab.com/.well-known/openid-configuration
   # The JWT token field that contains the user name
   subject_key: preferred_username
-  # the JWT token field that contains a list of user roles
+  # the JWT token field that contains a list of user roles (for individual role mapping)
   roles_key: roles
-  # Scopes
-  scopes: "openid profile email"
+  # the JWT token field that contains a list of user groups (for group-based role mapping)
+  groups_key: groups
+  # Scopes - include groups scope for group information
+  scopes: "openid profile email groups"
   # The address of Dashboards to redirect the user to after successful authentication
   dashboards_url: https://kibana.miriyev.ai
   # IdP client ID
   client_id: "{{ lookup('bitwarden.secrets.lookup', '0e6d8c47-1672-48dc-af58-b2de009c2b9a') }}"
   # IdP client secret
   client_secret: "{{ lookup('bitwarden.secrets.lookup', '02c00ca3-7d70-45f3-aa72-b2de009c478f') }}"
+  # Additional OIDC settings
+  enable_ssl: false
+  verify_hostnames: false
+  # Default role for OIDC users (can be overridden by groups_key or roles_key)
+  default_role: "oidc_readonly"
+  # Group to role mapping configuration
+  group_mapping:
+    # GitLab groups mapping
+    devops: "oidc_admin"
+    backend: "oidc_backend_developer"
+    frontend: "oidc_frontend_developer"
+    qa: "oidc_qa_analyst"
+    security: "oidc_security_analyst"
+    data: "oidc_data_analyst"
+    # AWS Cognito groups mapping (if using AWS)
+    # DevOpsGroup: "oidc_admin"
+    # BackendGroup: "oidc_backend_developer"
+    # FrontendGroup: "oidc_frontend_developer"
+    # QAGroup: "oidc_qa_analyst"
+    # SecurityGroup: "oidc_security_analyst"
+    # DataGroup: "oidc_data_analyst"
 
 # Overwrite demo configurations with your own
-copy_custom_security_configs: false
+copy_custom_security_configs: true
 
 # To override demo configurations, you can use your own configuration files.
 # Place them in the "files" directory. Specify the path to the files

@@ -100,15 +100,22 @@ config:
           type: openid
           challenge: false
           config:
-            enable_ssl: false
-            verify_hostnames: false
-            subject_key: {{ oidc.subject_key}}
-            roles_key: {{ oidc.roles_key}}
-            openid_connect_url: {{ oidc.connect_url}}
-            kibana_url: {{ oidc.dashboards_url}}
+            enable_ssl: {{ oidc.enable_ssl }}
+            verify_hostnames: {{ oidc.verify_hostnames }}
+            subject_key: {{ oidc.subject_key }}
+            roles_key: {{ oidc.roles_key }}
+            groups_key: {{ oidc.groups_key }}
+            openid_connect_url: {{ oidc.connect_url }}
+            kibana_url: {{ oidc.dashboards_url }}
         authentication_backend:
           type: noop
-    authz: {}
+    authz:
+      roles_from_oidc:
+        description: "Authorize via OIDC roles"
+        http_enabled: true
+        transport_enabled: true
+        authorization_backend:
+          type: noop
 {% else %}
     http:
       anonymous_auth_enabled: false

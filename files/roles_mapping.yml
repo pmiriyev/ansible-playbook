@@ -9,51 +9,111 @@ _meta:
 kibana_server:
   reserved: true
   users:
-  - "kibanaserver"
+    - "kibanaserver"
 
 logstash:
   reserved: true
   users:
-  - "logstash"
+    - "logstash"
 
 # Define your roles mapping here
 all_access:
   reserved: false
   backend_roles:
-  - "admin"
-  - "opensearch_admin"
+    - "admin"
+    - "opensearch_admin"
+    - "opensearch_admin"  # OIDC role mapping
   description: "Maps admin to all_access"
 # ----------------------------------------------------
 indexes_full_access:
   reserved: false
   backend_roles:
-  - "opensearch_admin"
+    - "opensearch_admin"
+    - "opensearch_admin"  # OIDC role mapping
   description: "Maps admin to indexes_full_access"
 # ----------------------------------------------------
 own_index:
   reserved: false
   users:
-  - "*"
+    - "*"
   description: "Allow full access to an index named like the username"
 # ----------------------------------------------------
 readall:
   reserved: false
   backend_roles:
-  - "opensearch_index_read_all"
+    - "opensearch_index_read_all"
+    - "opensearch_readonly"  # OIDC role mapping
+  description: "Maps readonly users to readall"
 # ----------------------------------------------------
 indexes_security_search_full_access:
   reserved: true
   backend_roles:
-  - "opensearch_index_read_all"
-  - "opensearch_index_read_security"
+    - "opensearch_index_read_all"
+    - "opensearch_index_read_security"
+    - "opensearch_security_read"  # OIDC role mapping
   description: "Maps users to indexes_security_search_full_access"
 # ----------------------------------------------------
 indexes_web_search_full_access:
   reserved: true
   backend_roles:
-  - "opensearch_index_read_all"
-  - "opensearch_index_read_web"
+    - "opensearch_index_read_all"
+    - "opensearch_index_read_web"
+    - "opensearch_web_read"  # OIDC role mapping
   description: "Maps users to indexes_web_search_full_access"
+# ----------------------------------------------------
+# OIDC specific role mappings
+oidc_admin:
+  reserved: false
+  backend_roles:
+    - "opensearch_admin"
+  description: "Maps OIDC admin users to all_access"
+# ----------------------------------------------------
+oidc_readonly:
+  reserved: false
+  backend_roles:
+    - "opensearch_readonly"
+  description: "Maps OIDC readonly users to readall"
+# ----------------------------------------------------
+oidc_security_analyst:
+  reserved: false
+  backend_roles:
+    - "opensearch_security_read"
+  description: "Maps OIDC security analysts to security indexes"
+# ----------------------------------------------------
+oidc_web_analyst:
+  reserved: false
+  backend_roles:
+    - "opensearch_web_read"
+  description: "Maps OIDC web analysts to web indexes"
+# ----------------------------------------------------
+# Group-based OIDC role mappings
+oidc_backend_developer:
+  reserved: false
+  backend_roles:
+    - "backend"
+    - "BackendGroup"
+  description: "Maps OIDC backend developers to backend indexes"
+# ----------------------------------------------------
+oidc_frontend_developer:
+  reserved: false
+  backend_roles:
+    - "frontend"
+    - "FrontendGroup"
+  description: "Maps OIDC frontend developers to frontend indexes"
+# ----------------------------------------------------
+oidc_qa_analyst:
+  reserved: false
+  backend_roles:
+    - "qa"
+    - "QAGroup"
+  description: "Maps OIDC QA analysts to testing indexes"
+# ----------------------------------------------------
+oidc_data_analyst:
+  reserved: false
+  backend_roles:
+    - "data"
+    - "DataGroup"
+  description: "Maps OIDC data analysts to data indexes"
 
 
 

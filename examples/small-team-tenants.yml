@@ -1,0 +1,12 @@
+# Small Team Tenants Configuration
+# Copy this to files/tenants.yml
+
+---
+_meta:
+  type: "tenants"
+  config_version: 2
+
+# Simple tenant structure for small team
+DEVELOPMENT:
+  reserved: false
+  description: "Main development tenant for small team"

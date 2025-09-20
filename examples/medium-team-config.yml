@@ -1,0 +1,79 @@
+# Medium Team Configuration (10-50 people)
+# Copy this to inventories/opensearch/group_vars/all/all.yml
+
+## Common opensearch configuration parameters ##
+
+os_cluster_name: os-cluster
+os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
+os_version: "3.2.0"
+os_dashboards_version: "3.2.0"
+domain_name: domain.internal
+
+# Java memory heap values(GB) for opensearch
+xms_value: 8
+xmx_value: 8
+java_pkg: openjdk-21-jdk
+java_home: /usr/lib/jvm/java-21-openjdk-amd64
+java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
+
+# Cluster type
+cluster_type: multi-node
+
+# opensearch user info
+os_user: opensearch
+os_dashboards_user: opensearch-dashboards
+
+# Number of days that certificates are valid
+cert_valid_days: 3650
+
+# Auth type: 'internal' or 'oidc' (OpenID). Default: internal
+auth_type: oidc
+
+# OIDC settings for medium team
+oidc:
+  name: "GitLab"
+  logo: "gitlab"
+  description: "Authenticate via IdP"
+  connect_url: https://gitlab.com/.well-known/openid-configuration
+  subject_key: preferred_username
+  groups_key: groups
+  scopes: "openid profile email groups"
+  dashboards_url: https://kibana.miriyev.ai
+  client_id: "{{ lookup('bitwarden.secrets.lookup', 'your-client-id') }}"
+  client_secret: "{{ lookup('bitwarden.secrets.lookup', 'your-client-secret') }}"
+  enable_ssl: false
+  verify_hostnames: false
+  default_role: "oidc_viewer"
+  
+  # Team-based group mapping for medium team
+  group_mapping:
+    # Leadership
+    engineering-managers: "oidc_manager"
+    product-managers: "oidc_pm"
+    
+    # Development teams
+    backend-team: "oidc_backend_developer"
+    frontend-team: "oidc_frontend_developer"
+    mobile-team: "oidc_mobile_developer"
+    
+    # Specialized teams
+    devops-team: "oidc_devops"
+    qa-team: "oidc_qa_analyst"
+    data-team: "oidc_data_analyst"
+    
+    # Support roles
+    support-team: "oidc_support"
+    stakeholders: "oidc_viewer"
+
+# Overwrite demo configurations with your own
+copy_custom_security_configs: true
+
+# Custom security plugin configs
+custom_security_plugin_configs:
+  - files/tenants.yml
+  - files/roles.yml
+  - files/roles_mapping.yml
+  - files/internal_users.yml
+
+# IaC settings
+iac_enable: false

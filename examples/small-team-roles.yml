@@ -1,0 +1,85 @@
+# Small Team Roles Configuration
+# Copy this to files/roles.yml
+
+---
+_meta:
+  type: "roles"
+  config_version: 2
+
+# Simple roles for small team
+oidc_admin:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "*"
+  tenant_permissions:
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_write"
+
+oidc_developer:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "app-*"
+        - "logs-*"
+        - "metrics-*"
+        - "api-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "indices:data/write/index"
+        - "indices:data/write/update"
+        - "indices:data/write/delete"
+        - "read"
+        - "write"
+        - "view_index_metadata"
+        - "create_index"
+        - "delete_index"
+  tenant_permissions:
+    - tenant_patterns:
+        - "DEVELOPMENT"
+      allowed_actions:
+        - "kibana_all_write"
+
+oidc_viewer:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "app-*"
+        - "logs-*"
+        - "metrics-*"
+      allowed_actions:
+        - "indices:data/read/search*"
+        - "read"
+        - "view_index_metadata"
+  tenant_permissions:
+    - tenant_patterns:
+        - "DEVELOPMENT"
+      allowed_actions:
+        - "kibana_all_read"
+
+# Reserved roles
+kibana_server:
+  reserved: true
+
+logstash:
+  reserved: true
+
+all_access:
+  reserved: false
+  index_permissions:
+    - index_patterns:
+        - "*"
+      allowed_actions:
+        - "*"
+  tenant_permissions:
+    - tenant_patterns:
+        - "*"
+      allowed_actions:
+        - "kibana_all_write"
+
+kibana_read_only:
+  reserved: true

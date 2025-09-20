@@ -10,3 +10,24 @@ SECURITY:
 WEB:
   reserved: false
   description: "Tenant for web-app logs"
+BACKEND:
+  reserved: false
+  description: "Tenant for backend application logs and metrics"
+API:
+  reserved: false
+  description: "Tenant for API logs and monitoring"
+FRONTEND:
+  reserved: false
+  description: "Tenant for frontend application logs"
+QA:
+  reserved: false
+  description: "Tenant for QA testing logs and results"
+TESTING:
+  reserved: false
+  description: "Tenant for testing and automation logs"
+DATA:
+  reserved: false
+  description: "Tenant for data analytics and metrics"
+ANALYTICS:
+  reserved: false
+  description: "Tenant for analytics dashboards and reports"

@@ -1,0 +1,104 @@
+# Enterprise Configuration (50+ people)
+# Copy this to inventories/opensearch/group_vars/all/all.yml
+
+## Common opensearch configuration parameters ##
+
+os_cluster_name: os-cluster
+os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
+os_version: "3.2.0"
+os_dashboards_version: "3.2.0"
+domain_name: domain.internal
+
+# Java memory heap values(GB) for opensearch
+xms_value: 16
+xmx_value: 16
+java_pkg: openjdk-21-jdk
+java_home: /usr/lib/jvm/java-21-openjdk-amd64
+java_home_local: /opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home
+
+# Cluster type
+cluster_type: multi-node
+
+# opensearch user info
+os_user: opensearch
+os_dashboards_user: opensearch-dashboards
+
+# Number of days that certificates are valid
+cert_valid_days: 3650
+
+# Auth type: 'internal' or 'oidc' (OpenID). Default: internal
+auth_type: oidc
+
+# OIDC settings for enterprise
+oidc:
+  name: "GitLab"
+  logo: "gitlab"
+  description: "Authenticate via IdP"
+  connect_url: https://gitlab.com/.well-known/openid-configuration
+  subject_key: preferred_username
+  groups_key: groups
+  scopes: "openid profile email groups"
+  dashboards_url: https://kibana.miriyev.ai
+  client_id: "{{ lookup('bitwarden.secrets.lookup', 'your-client-id') }}"
+  client_secret: "{{ lookup('bitwarden.secrets.lookup', 'your-client-secret') }}"
+  enable_ssl: true
+  verify_hostnames: true
+  default_role: "oidc_viewer"
+  
+  # Enterprise group mapping
+  group_mapping:
+    # Executive level
+    c-suite: "oidc_executive"
+    vp-engineering: "oidc_vp_engineering"
+    vp-product: "oidc_vp_product"
+    
+    # Engineering departments
+    platform-engineering: "oidc_platform_engineer"
+    backend-engineering: "oidc_backend_engineer"
+    frontend-engineering: "oidc_frontend_engineer"
+    mobile-engineering: "oidc_mobile_engineer"
+    data-engineering: "oidc_data_engineer"
+    ml-engineering: "oidc_ml_engineer"
+    
+    # Operations teams
+    devops-team: "oidc_devops"
+    sre-team: "oidc_sre"
+    security-team: "oidc_security_analyst"
+    
+    # Quality & Testing
+    qa-team: "oidc_qa_analyst"
+    test-automation: "oidc_test_automation"
+    performance-qa: "oidc_performance_qa"
+    
+    # Product & Design
+    product-team: "oidc_product_analyst"
+    ux-team: "oidc_ux_analyst"
+    design-team: "oidc_design_analyst"
+    
+    # Business & Analytics
+    business-intelligence: "oidc_bi_analyst"
+    data-science: "oidc_data_scientist"
+    marketing-analytics: "oidc_marketing_analyst"
+    
+    # Support & Operations
+    customer-support: "oidc_support"
+    technical-support: "oidc_technical_support"
+    compliance-team: "oidc_compliance"
+    
+    # External stakeholders
+    contractors: "oidc_contractor"
+    partners: "oidc_partner"
+    investors: "oidc_investor"
+
+# Overwrite demo configurations with your own
+copy_custom_security_configs: true
+
+# Custom security plugin configs
+custom_security_plugin_configs:
+  - files/tenants.yml
+  - files/roles.yml
+  - files/roles_mapping.yml
+  - files/internal_users.yml
+
+# IaC settings
+iac_enable: true
