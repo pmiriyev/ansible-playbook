@@ -46,7 +46,6 @@ auth_type: oidc
 # OIDC settings
 oidc:
   name: "GitLab"
-  logo: "gitlab"
   description: "Authenticate via IdP"
   # OpenID server URI
   connect_url: https://gitlab.com/.well-known/openid-configuration

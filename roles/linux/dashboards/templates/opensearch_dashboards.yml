@@ -19,19 +19,12 @@ opensearch_security.cookie.secure: false
 opensearch_security.auth.multiple_auth_enabled: true
 opensearch_security.auth.type: ["basicauth","openid"]
 
-# Basic authentication customization #
-opensearch_security.ui.basicauth.login.brandimage: /usr/share/opensearch-dashboards/config/basicauth.png
-opensearch_security.ui.basicauth.login.showbrandimage: true
-
 # OIDC auth customization and start settings #
 opensearch_security.ui.openid.login.buttonname: Log in with {{ oidc.name }}
-opensearch_security.ui.openid.login.brandimage: /usr/share/opensearch-dashboards/config/{{ oidc.logo }}.png
-opensearch_security.ui.openid.login.showbrandimage: true
-
 opensearch_security.openid.base_redirect_url: "{{ oidc.dashboards_url }}"
 opensearch_security.openid.client_id: "{{ oidc.client_id }}"
 opensearch_security.openid.scope: "{{ oidc.scopes }}"
 opensearch_security.openid.client_secret: "{{ oidc.client_secret }}"
 opensearch_security.openid.connect_url: "{{ oidc.connect_url }}"
-opensearch_security.openid.verify_hostnames: {{ oidc.verify_hostnames }}
+opensearch_security.openid.verify_hostnames: "{{ oidc.verify_hostnames }}"
 {% endif %}

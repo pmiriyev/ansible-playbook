@@ -54,15 +54,3 @@
   ansible.builtin.template:
     src: dashboards.service
     dest: "{{ systemctl_path }}/dashboards.service"
-
-- name: Dashboards Install | Copy brand images for OIDC authentication
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ os_conf_dir }}/"
-    owner: "{{ os_dashboards_user }}"
-    group: "{{ os_dashboards_user }}"
-    mode: '0644'
-  with_items:
-    - "{{ playbook_dir }}/files/basicauth.png"
-    - "{{ playbook_dir }}/files/{{ oidc.logo }}.png"
-  when: auth_type == 'oidc'

@@ -114,6 +114,3 @@ oidc_data_analyst:
     - "data"
     - "DataGroup"
   description: "Maps OIDC data analysts to data indexes"
-
-
-
